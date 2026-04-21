@@ -5,17 +5,9 @@
 ---
 
 ## 🚀 تشغيل النظام
-
-### الطريقة السهلة (موصى بها)
 ```bash
 python setup_and_run.py
-```
-ثم افتح المتصفح: **http://127.0.0.1:5000**
 
-### الطريقة اليدوية
-```bash
-pip install flask pandas numpy scipy pulp openpyxl werkzeug
-python app.py
 ```
 
 ---
