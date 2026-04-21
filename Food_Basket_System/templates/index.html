@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام السلة الغذائية الأردنية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-dark: #1a4731;
+  --green-mid:  #2d7a4f;
+  --green-light:#48b07c;
+  --green-pale: #e8f5ee;
+  --red:        #c0392b;
+  --gold:       #c8922a;
+  --gold-light: #f5e9c8;
+  --white:      #ffffff;
+  --gray-100:   #f7f8fa;
+  --gray-200:   #e9ecef;
+  --gray-500:   #6c757d;
+  --gray-800:   #2d3748;
+  --shadow-sm:  0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:  0 4px 20px rgba(0,0,0,.12);
+  --shadow-lg:  0 8px 40px rgba(0,0,0,.16);
+  --radius:     14px;
+  --radius-sm:  8px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:'Tajawal',sans-serif;
+  background:#f4f7f5;
+  color:var(--gray-800);
+  direction:rtl;
+  min-height:100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 60%, var(--green-light) 100%);
+  color:#fff;
+  padding:0;
+  position:relative;
+  overflow:hidden;
+}
+.header-pattern {
+  position:absolute; inset:0;
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0, rgba(255,255,255,.03) 1px, transparent 0, transparent 50%);
+  background-size:20px 20px;
+}
+.header-inner {
+  position:relative;
+  max-width:1200px;
+  margin:0 auto;
+  padding:28px 32px 24px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.header-logo {
+  width:64px; height:64px;
+  background:rgba(255,255,255,.15);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:32px;
+  border:2px solid rgba(255,255,255,.3);
+  flex-shrink:0;
+}
+.header-text h1 {
+  font-size:1.7rem; font-weight:800; line-height:1.2;
+  text-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.header-text p {
+  font-size:.95rem; opacity:.85; margin-top:4px;
+  font-weight:300;
+}
+.header-badges {
+  margin-right:auto;
+  display:flex; gap:8px; flex-wrap:wrap;
+}
+.badge {
+  background:rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.3);
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:.78rem;
+  backdrop-filter:blur(4px);
+}
+
+/* ── LAYOUT ── */
+.container { max-width:1200px; margin:0 auto; padding:28px 20px; }
+
+/* ── STEPS NAV ── */
+.steps-nav {
+  display:flex; gap:0;
+  background:#fff;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+  margin-bottom:28px;
+  overflow:hidden;
+}
+.step-btn {
+  flex:1; padding:16px 12px;
+  border:none; background:transparent;
+  cursor:pointer;
+  font-family:'Tajawal',sans-serif;
+  font-size:.9rem; font-weight:500;
+  color:var(--gray-500);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:all .2s;
+  border-left:1px solid var(--gray-200);
+  position:relative;
+}
+.step-btn:last-child { border-left:none; }
+.step-btn.active {
+  background:var(--green-dark);
+  color:#fff;
+}
+.step-btn.done {
+  background:var(--green-pale);
+  color:var(--green-mid);
+}
+.step-num {
+  width:26px; height:26px;
+  border-radius:50%;
+  border:2px solid currentColor;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.8rem; font-weight:700;
+  flex-shrink:0;
+}
+.step-btn.active .step-num { background:#fff; color:var(--green-dark); border-color:#fff; }
+.step-btn.done .step-num { background:var(--green-mid); color:#fff; border-color:var(--green-mid); }
+
+/* ── CARDS ── */
+.card {
+  background:#fff;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+  padding:28px;
+  margin-bottom:20px;
+}
+.card-title {
+  font-size:1.1rem; font-weight:700;
+  color:var(--green-dark);
+  margin-bottom:20px;
+  padding-bottom:12px;
+  border-bottom:2px solid var(--green-pale);
+  display:flex; align-items:center; gap:10px;
+}
+.card-title .icon {
+  width:36px; height:36px;
+  background:var(--green-pale);
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+}
+
+/* ── SECTIONS ── */
+.section { display:none; }
+.section.active { display:block; }
+
+/* ── UPLOAD ZONE ── */
+.upload-zone {
+  border: 2px dashed var(--green-light);
+  border-radius:var(--radius);
+  padding:48px 24px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .2s;
+  background:var(--green-pale);
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  background:#d4edde;
+  border-color:var(--green-dark);
+}
+.upload-zone .upload-icon { font-size:56px; margin-bottom:12px; display:block; }
+.upload-zone h3 { font-size:1.1rem; color:var(--green-dark); margin-bottom:6px; }
+.upload-zone p { color:var(--gray-500); font-size:.9rem; }
+#fileInput { display:none; }
+
+.upload-info-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px; margin-top:20px;
+}
+.upload-info-item {
+  background:var(--gray-100);
+  border-radius:var(--radius-sm);
+  padding:14px 16px;
+  display:flex; align-items:center; gap:10px;
+  font-size:.88rem;
+}
+.upload-info-item .dot { width:8px;height:8px;border-radius:50%;background:var(--green-mid);flex-shrink:0; }
+
+/* Food preview table */
+.matched-table {
+  width:100%; border-collapse:collapse;
+  margin-top:12px; font-size:.88rem;
+}
+.matched-table th {
+  background:var(--green-dark);
+  color:#fff; padding:10px 14px; text-align:right; font-weight:600;
+}
+.matched-table td {
+  padding:9px 14px; border-bottom:1px solid var(--gray-200);
+}
+.matched-table tr:hover td { background:var(--green-pale); }
+.price-badge {
+  background:var(--gold-light); color:var(--gold);
+  padding:3px 10px; border-radius:20px; font-weight:600; font-size:.83rem;
+}
+
+/* ── PERSONS SECTION ── */
+.persons-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:18px;
+}
+.person-card {
+  background:var(--gray-100);
+  border-radius:var(--radius);
+  padding:20px;
+  border:2px solid transparent;
+  transition:all .2s;
+  position:relative;
+}
+.person-card:hover { border-color:var(--green-light); }
+.person-card-header {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:16px;
+}
+.person-avatar {
+  width:42px; height:42px;
+  border-radius:50%;
+  background:var(--green-dark);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+}
+.person-card-title { font-weight:700; font-size:1rem; color:var(--green-dark); }
+.person-card-subtitle { font-size:.8rem; color:var(--gray-500); }
+.remove-person {
+  position:absolute; top:12px; left:12px;
+  width:28px; height:28px;
+  border-radius:50%;
+  border:none; background:transparent;
+  cursor:pointer;
+  color:var(--gray-500);
+  font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s;
+}
+.remove-person:hover { background:#fee; color:var(--red); }
+
+/* ── FORM ELEMENTS ── */
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.form-row.triple { grid-template-columns:1fr 1fr 1fr; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-group label {
+  font-size:.83rem; font-weight:600; color:var(--gray-800);
+}
+.form-control {
+  padding:10px 12px;
+  border:1.5px solid var(--gray-200);
+  border-radius:var(--radius-sm);
+  font-family:'Tajawal',sans-serif;
+  font-size:.9rem;
+  transition:border .2s;
+  background:#fff;
+  width:100%;
+}
+.form-control:focus {
+  outline:none;
+  border-color:var(--green-mid);
+  box-shadow:0 0 0 3px rgba(45,122,79,.1);
+}
+select.form-control { cursor:pointer; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding:11px 22px;
+  border-radius:var(--radius-sm);
+  border:none; cursor:pointer;
+  font-family:'Tajawal',sans-serif;
+  font-size:.95rem; font-weight:600;
+  transition:all .2s;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-primary {
+  background:var(--green-dark); color:#fff;
+}
+.btn-primary:hover { background:var(--green-mid); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+.btn-secondary {
+  background:var(--gray-100); color:var(--gray-800);
+  border:1.5px solid var(--gray-200);
+}
+.btn-secondary:hover { background:var(--gray-200); }
+.btn-gold {
+  background:var(--gold); color:#fff;
+}
+.btn-gold:hover { filter:brightness(1.1); }
+.btn-danger {
+  background:var(--red); color:#fff;
+}
+.btn-lg { padding:14px 32px; font-size:1.05rem; }
+.btn-sm { padding:7px 14px; font-size:.83rem; }
+
+.action-bar {
+  display:flex; gap:12px; align-items:center;
+  flex-wrap:wrap; margin-top:8px;
+}
+
+/* ── RESULTS ── */
+.results-header {
+  background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+  color:#fff;
+  border-radius:var(--radius);
+  padding:28px;
+  margin-bottom:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:20px;
+}
+.result-stat { text-align:center; }
+.result-stat .value {
+  font-size:2rem; font-weight:800; line-height:1;
+  margin-bottom:4px;
+}
+.result-stat .label { font-size:.82rem; opacity:.8; }
+.result-stat .sub { font-size:1rem; opacity:.7; }
+
+.coverage-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px; margin-top:16px;
+}
+.coverage-item {
+  background:var(--gray-100);
+  border-radius:var(--radius-sm);
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+}
+.coverage-item.ok { border-right:4px solid var(--green-mid); }
+.coverage-item.deficit { border-right:4px solid var(--red); }
+.coverage-name { font-size:.82rem; font-weight:600; margin-bottom:8px; color:var(--gray-800); }
+.coverage-bar-bg {
+  height:6px; background:var(--gray-200); border-radius:3px; margin-bottom:6px;
+}
+.coverage-bar {
+  height:6px; border-radius:3px; transition:width 1s ease;
+}
+.coverage-bar.ok { background:var(--green-mid); }
+.coverage-bar.deficit { background:var(--red); }
+.coverage-pct { font-size:.8rem; font-weight:700; }
+.coverage-pct.ok { color:var(--green-mid); }
+.coverage-pct.deficit { color:var(--red); }
+.coverage-val { font-size:.75rem; color:var(--gray-500); }
+
+/* Basket table */
+.basket-table {
+  width:100%; border-collapse:collapse; font-size:.88rem;
+}
+.basket-table thead tr {
+  background:var(--green-dark); color:#fff;
+}
+.basket-table th { padding:11px 14px; text-align:right; font-weight:600; }
+.basket-table td { padding:10px 14px; border-bottom:1px solid var(--gray-200); }
+.basket-table tr:hover td { background:var(--green-pale); }
+.basket-table .food-name { font-weight:600; color:var(--green-dark); }
+.basket-table .group-tag {
+  font-size:.75rem; color:var(--gray-500);
+  background:var(--gray-100); padding:2px 8px; border-radius:10px;
+  display:inline-block; margin-top:2px;
+}
+
+/* Person summaries in results */
+.person-summary-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:14px; margin-bottom:20px;
+}
+.person-summary-card {
+  background:var(--green-pale);
+  border-radius:var(--radius-sm);
+  padding:16px;
+  border:1px solid rgba(45,122,79,.2);
+}
+.person-summary-card h4 { font-size:.95rem; font-weight:700; color:var(--green-dark); margin-bottom:10px; }
+.person-stat-row {
+  display:flex; justify-content:space-between;
+  font-size:.83rem; margin-bottom:5px;
+  color:var(--gray-800);
+}
+.person-stat-row .lbl { color:var(--gray-500); }
+.person-stat-row .val { font-weight:600; }
+
+/* ── LOADING ── */
+.loading-overlay {
+  position:fixed; inset:0;
+  background:rgba(26,71,49,.85);
+  display:flex; align-items:center; justify-content:center;
+  z-index:9999;
+  display:none;
+}
+.loading-box {
+  background:#fff;
+  border-radius:var(--radius);
+  padding:48px 40px;
+  text-align:center;
+  max-width:340px;
+}
+.spinner {
+  width:56px; height:56px;
+  border:4px solid var(--green-pale);
+  border-top-color:var(--green-dark);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  margin:0 auto 20px;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+.loading-box h3 { font-size:1.1rem; color:var(--green-dark); margin-bottom:8px; }
+.loading-box p { font-size:.88rem; color:var(--gray-500); }
+
+/* ── ALERTS ── */
+.alert {
+  padding:14px 18px;
+  border-radius:var(--radius-sm);
+  margin-bottom:16px;
+  font-size:.9rem;
+  display:flex; align-items:flex-start; gap:10px;
+}
+.alert-success { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+.alert-danger  { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+.alert-info    { background:#d1ecf1; color:#0c5460; border:1px solid #bee5eb; }
+.alert-warning { background:var(--gold-light); color:#856404; border:1px solid #ffc107; }
+
+/* ── TABS ── */
+.tabs { display:flex; gap:0; border-bottom:2px solid var(--gray-200); margin-bottom:20px; }
+.tab-btn {
+  padding:10px 20px;
+  border:none; background:none;
+  font-family:'Tajawal',sans-serif;
+  font-size:.9rem; font-weight:600;
+  color:var(--gray-500); cursor:pointer;
+  border-bottom:3px solid transparent;
+  margin-bottom:-2px;
+  transition:all .2s;
+}
+.tab-btn.active { color:var(--green-dark); border-bottom-color:var(--green-dark); }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ── TEMPLATE DOWNLOAD ── */
+.template-box {
+  background:var(--gold-light);
+  border-radius:var(--radius-sm);
+  padding:16px 20px;
+  display:flex; align-items:center; gap:14px;
+  border:1px solid rgba(200,146,42,.3);
+}
+.template-box .icon { font-size:28px; }
+.template-box p { font-size:.88rem; color:var(--gray-800); margin-bottom:6px; }
+
+/* ── DAYS SELECTOR ── */
+.days-selector {
+  display:flex; gap:10px; flex-wrap:wrap;
+}
+.day-btn {
+  padding:8px 18px;
+  border-radius:20px;
+  border:2px solid var(--gray-200);
+  background:#fff; cursor:pointer;
+  font-family:'Tajawal',sans-serif;
+  font-size:.9rem; font-weight:600;
+  transition:all .2s;
+}
+.day-btn.active {
+  background:var(--green-dark); color:#fff; border-color:var(--green-dark);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px) {
+  .header-inner { flex-direction:column; text-align:center; }
+  .header-badges { margin:0; justify-content:center; }
+  .form-row { grid-template-columns:1fr; }
+  .form-row.triple { grid-template-columns:1fr 1fr; }
+  .steps-nav { flex-wrap:wrap; }
+  .step-btn { flex:1 1 calc(50% - 1px); border-bottom:1px solid var(--gray-200); }
+}
+
+/* ── PRINT ── */
+@media print {
+  .header-badges,.steps-nav,.action-bar,.btn { display:none !important; }
+  .section { display:block !important; }
+}
+
+/* ── GOVERNORATE SELECTOR ── */
+.gov-selector-wrap {
+  margin-top: 20px;
+  display: none;  /* shown after upload */
+}
+.gov-selector-wrap.visible { display: block; }
+.gov-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.gov-btn {
+  padding: 12px 10px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--gray-200);
+  background: #fff;
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
+  font-size: .88rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all .2s;
+  position: relative;
+}
+.gov-btn:hover { border-color: var(--green-light); background: var(--green-pale); }
+.gov-btn.active {
+  background: var(--green-dark);
+  color: #fff;
+  border-color: var(--green-dark);
+  box-shadow: 0 4px 12px rgba(26,71,49,.25);
+}
+.gov-btn .gov-flag { font-size: 20px; display: block; margin-bottom: 4px; }
+.gov-selected-bar {
+  background: var(--green-pale);
+  border: 1.5px solid var(--green-light);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-top: 14px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  font-size: .9rem;
+}
+.gov-selected-bar.visible { display: flex; }
+.gov-selected-bar strong { color: var(--green-dark); font-size: 1rem; }
+
+/* ── RESULTS GOVERNORATE BADGE ── */
+.gov-result-badge {
+  background: rgba(255,255,255,.2);
+  border: 1px solid rgba(255,255,255,.4);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: .9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* ── BASKET GROUP HEADER ── */
+.basket-group-header td {
+  background: var(--green-dark) !important;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: .88rem;
+  padding: 8px 14px !important;
+  letter-spacing: .3px;
+}
+.basket-group-header td:first-child {
+  border-radius: 0;
+}
+.basket-group-sub {
+  background: var(--green-pale) !important;
+}
+.basket-group-row-odd  td { background: #fff; }
+.basket-group-row-even td { background: #f8faf9; }
+.group-cost-total {
+  font-size: .78rem;
+  color: rgba(255,255,255,.75);
+  margin-right: 8px;
+  font-weight: 400;
+}
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--green-pale);
+  color: var(--green-dark);
+  font-size: .75rem;
+  font-weight: 700;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-pattern"></div>
+  <div class="header-inner">
+    <div class="header-logo">🌿</div>
+    <div class="header-text">
+      <h1>السلة التغذوية </h1>
+      <p> قسم النمذجة ودعم القرار  </p>
+    </div>
+      </div>
+</div>
+
+<!-- CONTAINER -->
+<div class="container">
+
+  <!-- STEP NAVIGATION -->
+  <div class="steps-nav">
+    <button class="step-btn active" onclick="goTo(1)" id="stepBtn1">
+      <span class="step-num">1</span> رفع الأسعار
+    </button>
+    <button class="step-btn" onclick="goTo(2)" id="stepBtn2">
+      <span class="step-num">2</span> بيانات الأفراد
+    </button>
+    <button class="step-btn" onclick="goTo(3)" id="stepBtn3">
+      <span class="step-num">3</span> إعدادات السلة
+    </button>
+    <button class="step-btn" onclick="goTo(4)" id="stepBtn4">
+      <span class="step-num">4</span> النتائج
+    </button>
+  </div>
+
+  <!-- ======= SECTION 1: PRICES ======= -->
+  <div class="section active" id="sec1">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">📋</div>
+        رفع ملف الأسعار
+      </div>
+
+      <div class="template-box" style="margin-bottom:20px;">
+        <div class="icon">📥</div>
+        <div>
+          <p><strong>قم بتحميل النموذج أولاً</strong> — يحتوي على جميع أكواد الأغذية الأردنية</p>
+          <a href="/template_prices" class="btn btn-gold btn-sm" style="text-decoration:none;">
+            ⬇ تحميل نموذج الأسعار (Excel)
+          </a>
+        </div>
+      </div>
+
+      <div id="alertPrices"></div>
+
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+        <span class="upload-icon">📂</span>
+        <h3>اسحب وأفلت ملف الأسعار هنا</h3>
+        <p>أو انقر للاختيار — يدعم: xlsx, xls, csv</p>
+        <p style="margin-top:8px;font-size:.8rem;color:var(--green-mid);">
+          يجب أن يحتوي الملف على عمودين: <strong>food_code</strong> و <strong>price_per_100g</strong>
+        </p>
+      </div>
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="uploadFile(this)">
+
+      <div id="pricesResult" style="display:none;margin-top:20px;">
+        <div class="alert alert-success" id="pricesAlert"></div>
+        <div class="card-title" style="margin-top:16px;">
+          <div class="icon">✅</div> الأغذية المتطابقة
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="matched-table" id="matchedTable">
+            <thead>
+              <tr>
+                <th>الكود</th>
+                <th>اسم الغذاء</th>
+                <th>السعر لكل 100غ (دينار)</th>
+              </tr>
+            </thead>
+            <tbody id="matchedBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      
+      <!-- ── GOVERNORATE SELECTOR ── -->
+      <div class="gov-selector-wrap" id="govSelectorWrap">
+        <div class="card-title" style="margin-top:4px;">
+          <div class="icon">🗺️</div>
+          اختر المحافظة لحساب السلة
+        </div>
+        <div class="gov-grid" id="govGrid">
+          <!-- filled by JS -->
+        </div>
+        <div class="gov-selected-bar" id="govSelectedBar">
+          <span>📍</span>
+          <span>المحافظة المختارة:</span>
+          <strong id="govSelectedName">—</strong>
+          <span style="margin-right:auto;font-size:.82rem;color:var(--gray-500);" id="govMatchCount"></span>
+        </div>
+      </div>
+      <div class="action-bar" style="margin-top:20px;">
+        <button class="btn btn-primary btn-lg" onclick="goTo(2)" id="btnNext1" disabled>
+          التالي: بيانات الأفراد ←
+        </button>
+      </div>
+    </div>
+
+    <!-- Food DB info -->
+    <div class="card">
+      <div class="card-title"><div class="icon">🍎</div> قاعدة بيانات الأغذية الأردنية</div>
+      <div id="foodsDbInfo">جاري التحميل...</div>
+    </div>
+  </div>
+
+  <!-- ======= SECTION 2: PERSONS ======= -->
+  <div class="section" id="sec2">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">👥</div>
+        بيانات أفراد الأسرة
+        <button class="btn btn-primary btn-sm" onclick="addPerson()" style="margin-right:auto;">
+          + إضافة فرد
+        </button>
+      </div>
+
+      <div id="alertPersons"></div>
+      <div class="persons-grid" id="personsGrid"></div>
+
+      <div class="action-bar" style="margin-top:16px;">
+        <button class="btn btn-secondary" onclick="goTo(1)">← رجوع</button>
+        <button class="btn btn-primary btn-lg" onclick="nextToSettings()">التالي: إعدادات السلة ←</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= SECTION 3: SETTINGS ======= -->
+  <div class="section" id="sec3">
+    <div class="card">
+      <div class="card-title"><div class="icon">⚙️</div> إعدادات السلة الغذائية</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>مدة السلة</label>
+          <div class="days-selector" id="daysBtns">
+            <button class="day-btn" onclick="setDays(7,this)">أسبوع (7)</button>
+            <button class="day-btn active" onclick="setDays(30,this)">شهر (30)</button>
+            <button class="day-btn" onclick="setDays(90,this)">ربع سنة (90)</button>
+            <button class="day-btn" onclick="setDays(180,this)">نصف سنة (180)</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>عدد الأيام المخصص</label>
+          <input type="number" class="form-control" id="nDays" value="30" min="1" max="365"
+                 onchange="document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'))">
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <div>
+          <strong>📌 ملاحظة:</strong> يستخدم النظام خوارزمية البرمجة الخطية (Linear Programming) لإيجاد
+          <strong>أقل تكلفة</strong> تضمن تغطية جميع الاحتياجات الغذائية للأفراد وفق معادلة:
+          <br><code style="background:rgba(0,0,0,.1);padding:2px 8px;border-radius:4px;margin-top:6px;display:inline-block;">
+            الطاقة الكلية = BMR × PAL
+          </code>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn btn-secondary" onclick="goTo(2)">← رجوع</button>
+        <button class="btn btn-gold btn-lg" onclick="runCalculation()">
+          🔄 حساب السلة الغذائية المثلى
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= SECTION 4: RESULTS ======= -->
+  <div class="section" id="sec4">
+    <div id="alertResults"></div>
+    <div id="resultsContent"></div>
+    <div class="action-bar">
+      <button class="btn btn-secondary" onclick="goTo(1)">🔄 بداية جديدة</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 طباعة التقرير</button>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <h3>جاري الحساب...</h3>
+    <p>يتم تحليل الاحتياجات الغذائية وتحسين السلة</p>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────
+let state = {
+  pricesFile: null,
+  pricesLoaded: false,
+  persons: [],
+  nDays: 30,
+};
+
+let personCounter = 0;
+
+// ─────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────
+function goTo(step) {
+  document.querySelectorAll('.section').forEach((s,i) => {
+    s.classList.toggle('active', i+1===step);
+  });
+  document.querySelectorAll('.step-btn').forEach((b,i) => {
+    b.classList.remove('active','done');
+    if(i+1===step) b.classList.add('active');
+    else if(i+1<step) b.classList.add('done');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─────────────────────────────────────────────────
+// UPLOAD
+// ─────────────────────────────────────────────────
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', e=>{e.preventDefault();uploadZone.classList.add('drag-over');});
+uploadZone.addEventListener('dragleave', ()=>uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e=>{
+  e.preventDefault();uploadZone.classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f) { const inp=document.getElementById('fileInput'); inp.files=e.dataTransfer.files; uploadFile(inp); }
+});
+
+async function uploadFile(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const formData = new FormData();
+  formData.append('price_file', file);
+
+  document.getElementById('alertPrices').innerHTML = `
+    <div class="alert alert-info">⏳ جاري رفع الملف وتحليله...</div>`;
+
+  try {
+    const res = await fetch('/upload_prices', {method:'POST', body:formData});
+    const data = await res.json();
+    if(data.error) {
+      document.getElementById('alertPrices').innerHTML = `<div class="alert alert-danger">❌ ${data.error}</div>`;
+      return;
+    }
+    state.pricesFile = null; // will be re-fetched
+    state.pricesLoaded = true;
+
+    document.getElementById('alertPrices').innerHTML = `<div class="alert alert-success">✅ ${data.message}</div>`;
+    document.getElementById('btnNext1').disabled = false;
+
+    // Show matched foods
+    document.getElementById('pricesResult').style.display='block';
+    document.getElementById('pricesAlert').textContent = data.message;
+    const tbody = document.getElementById('matchedBody');
+    tbody.innerHTML = '';
+    (data.matched_foods||[]).forEach(f=>{
+      tbody.innerHTML += `<tr>
+        <td><code>${f.food_code}</code></td>
+        <td>${f.food_name_ar}</td>
+        <td><span class="price-badge">${f.price_per_100g.toFixed(3)} د.أ</span></td>
+      </tr>`;
+    });
+  } catch(e) {
+    document.getElementById('alertPrices').innerHTML = `<div class="alert alert-danger">❌ خطأ في الشبكة: ${e.message}</div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────
+// PERSONS
+// ─────────────────────────────────────────────────
+const PAL_OPTIONS = [
+  {value:'sedentary',  label:'خامل (جلوس معظم اليوم)'},
+  {value:'light',      label:'نشاط خفيف'},
+  {value:'moderate',   label:'نشاط معتدل'},
+  {value:'active',     label:'نشاط عالٍ'},
+  {value:'very_active',label:'نشاط مرتفع جداً'},
+];
+
+const LIFE_STAGE_OPTIONS = [
+  {value:'normal',      label:'عادي'},
+  {value:'pregnant_t1', label:'حامل - الثلث الأول'},
+  {value:'pregnant_t2', label:'حامل - الثلث الثاني'},
+  {value:'pregnant_t3', label:'حامل - الثلث الثالث'},
+  {value:'lactating',   label:'مرضعة'},
+];
+
+function addPerson(data={}) {
+  personCounter++;
+  const id = 'p'+personCounter;
+  const palOpts = PAL_OPTIONS.map(o=>`<option value="${o.value}" ${(data.pal_level||'moderate')===o.value?'selected':''}>${o.label}</option>`).join('');
+  const stageOpts = LIFE_STAGE_OPTIONS.map(o=>`<option value="${o.value}" ${(data.life_stage||'normal')===o.value?'selected':''}>${o.label}</option>`).join('');
+  const gender = data.gender||'male';
+
+  const html = `
+  <div class="person-card" id="card_${id}">
+    <button class="remove-person" onclick="removePerson('${id}')" title="حذف">✕</button>
+    <div class="person-card-header">
+      <div class="person-avatar" id="av_${id}">${gender==='male'?'👨':'👩'}</div>
+      <div>
+        <div class="person-card-title">فرد ${personCounter}</div>
+        <div class="person-card-subtitle" id="bmi_${id}">—</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>الاسم (اختياري)</label>
+        <input type="text" class="form-control" id="name_${id}" value="${data.name||''}" placeholder="اسم الفرد">
+      </div>
+      <div class="form-group">
+        <label>الجنس</label>
+        <select class="form-control" id="gender_${id}" onchange="updateAvatar('${id}')">
+          <option value="male" ${gender==='male'?'selected':''}>ذكر</option>
+          <option value="female" ${gender==='female'?'selected':''}>أنثى</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row triple">
+      <div class="form-group">
+        <label>العمر (سنة)</label>
+        <input type="number" class="form-control" id="age_${id}" value="${data.age||25}" min="0" max="120"
+               onchange="updateBMR('${id}')">
+      </div>
+      <div class="form-group">
+        <label>الوزن (كغ)</label>
+        <input type="number" class="form-control" id="weight_${id}" value="${data.weight_kg||70}" min="1" max="300" step="0.1"
+               onchange="updateBMR('${id}')">
+      </div>
+      <div class="form-group">
+        <label>الطول (سم)</label>
+        <input type="number" class="form-control" id="height_${id}" value="${data.height_cm||170}" min="30" max="250"
+               onchange="updateBMR('${id}')">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>مستوى النشاط البدني (PAL)</label>
+        <select class="form-control" id="pal_${id}" onchange="updateBMR('${id}')">${palOpts}</select>
+      </div>
+      <div class="form-group">
+        <label>الحالة الخاصة</label>
+        <select class="form-control" id="stage_${id}">${stageOpts}</select>
+      </div>
+    </div>
+
+    <div style="background:var(--green-pale);border-radius:8px;padding:10px 14px;font-size:.83rem;margin-top:4px;" id="bmrBox_${id}">
+      جاري الحساب...
+    </div>
+  </div>`;
+
+  document.getElementById('personsGrid').insertAdjacentHTML('beforeend', html);
+  updateBMR(id);
+  state.persons.push(id);
+}
+
+function removePerson(id) {
+  document.getElementById('card_'+id)?.remove();
+  state.persons = state.persons.filter(p=>p!==id);
+}
+
+function updateAvatar(id) {
+  const g = document.getElementById('gender_'+id)?.value;
+  document.getElementById('av_'+id).textContent = g==='male'?'👨':'👩';
+  updateBMR(id);
+}
+
+function updateBMR(id) {
+  const age    = parseInt(document.getElementById('age_'+id)?.value)||25;
+  const weight = parseFloat(document.getElementById('weight_'+id)?.value)||70;
+  const height = parseFloat(document.getElementById('height_'+id)?.value)||170;
+  const gender = document.getElementById('gender_'+id)?.value||'male';
+  const pal    = parseFloat(document.getElementById('pal_'+id)?.value.split('_')[0])||1.55;
+
+  // Schofield BMR (JS version) — produces MJ/day × 239 = kcal/day
+  let bmr = 0;
+  if(gender==='male') {
+    if(age<3)      bmr=(0.249*weight-0.127)*239;
+    else if(age<=10) bmr=(0.095*weight+2.110*(height/100)+0.166)*239;
+    else if(age<=18) bmr=(0.074*weight+2.754*(height/100)+0.082)*239;
+    else if(age<=30) bmr=(0.063*weight+2.896*(height/100)-3.108)*239;
+    else if(age<=60) bmr=(0.048*weight+3.122*(height/100)-3.338)*239;
+    else             bmr=(0.049*weight+2.459*(height/100)-1.840)*239;
+  } else {
+    if(age<3)      bmr=(0.244*weight-0.130)*239;
+    else if(age<=10) bmr=(0.085*weight+2.033*(height/100)-0.651)*239;
+    else if(age<=18) bmr=(0.056*weight+1.938*(height/100)+0.129)*239;
+    else if(age<=30) bmr=(0.062*weight+2.036*(height/100)+0.069)*239;
+    else if(age<=60) bmr=(0.034*weight+2.882*(height/100)-1.290)*239;
+    else             bmr=(0.038*weight+2.755*(height/100)-1.320)*239;
+  }
+
+  // PAL map
+  const palMap={sedentary:1.40,light:1.55,moderate:1.75,active:2.00,very_active:2.20};
+  const palSelect = document.getElementById('pal_'+id)?.value||'moderate';
+  const palVal = palMap[palSelect]||1.75;
+  const tdee = bmr*palVal;
+  const bmi = weight/((height/100)**2);
+
+  const bmiStatus = bmi<18.5?'نقص وزن 🔴':bmi<25?'وزن طبيعي 🟢':bmi<30?'زيادة وزن 🟡':'سمنة 🔴';
+  document.getElementById('bmi_'+id).textContent = `BMI: ${bmi.toFixed(1)} — ${bmiStatus}`;
+
+  const box = document.getElementById('bmrBox_'+id);
+  if(box) box.innerHTML = `
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <span>🔥 <strong>BMR:</strong> ${Math.round(bmr)} كيلوكالوري/يوم</span>
+      <span>⚡ <strong>PAL:</strong> ×${palVal}</span>
+      <span>🎯 <strong>الطاقة الكلية:</strong> ${Math.round(tdee)} كيلوكالوري/يوم</span>
+    </div>`;
+}
+
+
+function nextToSettings() {
+  if(govState.fileType === 'multi_gov' && !govState.selectedGov) {
+    document.getElementById('alertPersons').innerHTML =
+      '<div class="alert alert-warning">⚠️ يرجى اختيار المحافظة من الخطوة الأولى أولاً</div>';
+    goTo(1);
+    return;
+  }
+  document.getElementById('alertPersons').innerHTML = '';
+  goTo(3);
+}
+
+// ─────────────────────────────────────────────────
+// DAYS
+// ─────────────────────────────────────────────────
+function setDays(n, btn) {
+  document.getElementById('nDays').value = n;
+  document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ─────────────────────────────────────────────────
+// CALCULATE
+// ─────────────────────────────────────────────────
+async function runCalculation() {
+  if(!state.pricesLoaded) {
+    alert('يرجى رفع ملف الأسعار أولاً');
+    goTo(1); return;
+  }
+  if(state.persons.length===0) {
+    alert('يرجى إضافة فرد واحد على الأقل');
+    goTo(2); return;
+  }
+
+  // Collect persons data
+  const personsData = [];
+  for(const id of state.persons) {
+    const card = document.getElementById('card_'+id);
+    if(!card) continue;
+    personsData.push({
+      name:       document.getElementById('name_'+id)?.value || 'فرد',
+      age:        parseInt(document.getElementById('age_'+id)?.value),
+      gender:     document.getElementById('gender_'+id)?.value,
+      weight_kg:  parseFloat(document.getElementById('weight_'+id)?.value),
+      height_cm:  parseFloat(document.getElementById('height_'+id)?.value),
+      pal_level:  document.getElementById('pal_'+id)?.value,
+      life_stage: document.getElementById('stage_'+id)?.value,
+    });
+  }
+
+  // Get the uploaded file name from server session by using the last uploaded
+  // We'll pass the filepath from the successful upload response
+  // For simplicity, we fetch /api/last_prices — but we stored it in pricesFilePath
+  const nDays = parseInt(document.getElementById('nDays').value)||30;
+
+  document.getElementById('loadingOverlay').style.display='flex';
+  goTo(4);
+
+  try {
+    const res = await fetch('/calculate', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        persons: personsData,
+        n_days: nDays,
+        prices_file: govState.filepath || window._pricesFilePath || '',
+        governorate: govState.selectedGov || '',
+        file_type: govState.fileType || 'single',
+      })
+    });
+    const data = await res.json();
+    document.getElementById('loadingOverlay').style.display='none';
+
+    if(data.error) {
+      document.getElementById('alertResults').innerHTML = `<div class="alert alert-danger">❌ ${data.error}</div>`;
+      return;
+    }
+    renderResults(data);
+  } catch(e) {
+    document.getElementById('loadingOverlay').style.display='none';
+    document.getElementById('alertResults').innerHTML = `<div class="alert alert-danger">❌ خطأ: ${e.message}</div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────
+// RENDER RESULTS
+// ─────────────────────────────────────────────────
+const NUTRIENT_LABELS = {
+  energy_kcal: 'الطاقة (kcal)',
+  protein_g:   'البروتين (غ)',
+  fat_g:       'الدهون (غ)',
+  carb_g:      'الكربوهيدرات (غ)',
+  vit_a_ug:    'فيتامين A (µg)',
+  vit_c_mg:    'فيتامين C (mg)',
+  vit_d_ug:    'فيتامين D (µg)',
+  calcium_mg:  'الكالسيوم (mg)',
+  iron_mg:     'الحديد (mg)',
+  zinc_mg:     'الزنك (mg)',
+  folate_ug:   'حمض الفوليك (µg)',
+  vit_b12_ug:  'فيتامين B12 (µg)',
+};
+
+function renderResults(data) {
+  const el = document.getElementById('resultsContent');
+  const costPerPerson = data.total_cost / data.n_persons;
+  const costPerDay = data.total_cost / data.n_days;
+
+  // Header stats
+  let statsHtml = `
+  <div class="results-header">
+    <div class="result-stat">
+      <div class="value">${data.total_cost.toFixed(2)}</div>
+      <div class="label">التكلفة الإجمالية (دينار)</div>
+      <div class="sub">لـ ${data.n_days} يوم</div>
+    </div>
+    <div class="result-stat">
+      <div class="value">${costPerDay.toFixed(2)}</div>
+      <div class="label">التكلفة اليومية (دينار)</div>
+      <div class="sub">للأسرة كاملة</div>
+    </div>
+    <div class="result-stat">
+      <div class="value">${(costPerPerson/data.n_days).toFixed(2)}</div>
+      <div class="label">تكلفة الفرد/يوم (دينار)</div>
+    </div>
+    <div class="result-stat">
+      <div class="value">${data.basket_items.length}</div>
+      <div class="label">عدد الأغذية في السلة</div>
+    </div>
+    <div class="result-stat">
+      <div class="value">${data.n_persons}</div>
+      <div class="label">عدد أفراد الأسرة</div>
+    </div>
+  </div>
+  ${data.governorate && data.governorate!=='غير محدد'
+    ? `<div class="gov-result-badge">📍 محافظة: <strong>${data.governorate}</strong></div>`
+    : ''}`;
+
+  // Person summaries
+  let personsHtml = `<div class="card"><div class="card-title"><div class="icon">👥</div> بيانات الأفراد وحاجتهم الطاقوية</div>
+  <div class="person-summary-grid">`;
+  (data.persons||[]).forEach(p=>{
+    personsHtml += `
+    <div class="person-summary-card">
+      <h4>${p.gender==='ذكر'?'👨':'👩'} ${p.name} (${p.age} سنة)</h4>
+      <div class="person-stat-row"><span class="lbl">الجنس</span><span class="val">${p.gender}</span></div>
+      <div class="person-stat-row"><span class="lbl">الوزن</span><span class="val">${p.weight_kg} كغ</span></div>
+      <div class="person-stat-row"><span class="lbl">الطول</span><span class="val">${p.height_cm} سم</span></div>
+      <div class="person-stat-row"><span class="lbl">BMR</span><span class="val">${p.bmr} kcal</span></div>
+      <div class="person-stat-row"><span class="lbl">PAL</span><span class="val">×${p.pal_value}</span></div>
+      <div class="person-stat-row" style="border-top:1px solid rgba(0,0,0,.1);padding-top:5px;margin-top:5px;">
+        <span class="lbl">الطاقة اليومية</span>
+        <span class="val" style="color:var(--green-dark)">${p.tdee} kcal</span>
+      </div>
+    </div>`;
+  });
+  personsHtml += '</div></div>';
+
+  // Coverage
+  let covHtml = `<div class="card"><div class="card-title"><div class="icon">📊</div> تغطية المغذيات</div>
+  <div class="coverage-grid">`;
+  Object.entries(data.coverage||{}).forEach(([k,v])=>{
+    const label = NUTRIENT_LABELS[k]||k;
+    const w = Math.min(v.coverage_pct, 100);
+    covHtml += `
+    <div class="coverage-item ${v.status}">
+      <div class="coverage-name">${label}</div>
+      <div class="coverage-bar-bg">
+        <div class="coverage-bar ${v.status}" style="width:${w}%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="coverage-pct ${v.status}">${v.coverage_pct}%</span>
+        <span class="coverage-val">${v.value} / ${v.required_min}</span>
+      </div>
+    </div>`;
+  });
+  covHtml += '</div></div>';
+
+  // Basket items
+  // ── Group items by food group, then sort by cost desc within each group ──
+  const GROUP_ICONS = {
+    'الحبوب والنشويات':              '🌾',
+    'اللحوم والأسماك والبقوليات':    '🥩',
+    'الألبان ومشتقاتها والبيض':      '🥛',
+    'الخضروات':                       '🥦',
+    'الفواكه والمكسرات':              '🍎',
+    'الدهون والزيوت':                 '🫒',
+    'السكريات والحلويات':             '🍯',
+    'التوابل والمشروبات':             '🧂',
+  };
+
+  // Build ordered groups (preserve server order which is already group-sorted)
+  const orderedGroups = [];
+  const seenGroups = {};
+  data.basket_items.forEach(item => {
+    const g = item.group_name_ar || 'أخرى';
+    if (!seenGroups[g]) { seenGroups[g] = []; orderedGroups.push(g); }
+    seenGroups[g].push(item);
+  });
+
+  let basketHtml = `<div class="card">
+    <div class="card-title"><div class="icon">🛒</div> السلة الغذائية المثلى
+      <span style="margin-right:auto;font-size:.82rem;color:var(--gray-500);font-weight:400;">
+        مرتبة حسب المجموعة الغذائية · من الأعلى تكلفةً للأدنى داخل كل مجموعة
+      </span>
+    </div>
+    <div style="overflow-x:auto;">
+    <table class="basket-table">
+      <thead><tr>
+        <th>#</th>
+        <th>الغذاء</th>
+        <th>الكمية اليومية (غ)</th>
+        <th>الكمية الكلية (غ)</th>
+        <th>السعر/100غ</th>
+        <th>التكلفة الإجمالية</th>
+        <th>النسبة</th>
+      </tr></thead>
+      <tbody>`;
+
+  let rowNum = 1;
+  orderedGroups.forEach(gname => {
+    const items = seenGroups[gname];
+    // Group subtotal
+    const groupTotal = items.reduce((s,it) => s + it.item_cost, 0);
+    const groupPct   = (groupTotal / data.total_cost * 100).toFixed(1);
+    const icon = GROUP_ICONS[gname] || '📦';
+
+    // Group header row
+    basketHtml += `<tr class="basket-group-header">
+      <td colspan="7">
+        ${icon} &nbsp;<strong>${gname}</strong>
+        <span class="group-cost-total">${items.length} سلعة &nbsp;|&nbsp; ${groupTotal.toFixed(3)} د.أ &nbsp;(${groupPct}%)</span>
+      </td>
+    </tr>`;
+
+    // Items sorted by cost desc (already sorted by server, but re-sort just in case)
+    const sorted = [...items].sort((a,b) => b.item_cost - a.item_cost);
+    sorted.forEach((item, idx) => {
+      const pct  = (item.item_cost / data.total_cost * 100).toFixed(1);
+      const rowClass = idx % 2 === 0 ? 'basket-group-row-odd' : 'basket-group-row-even';
+      basketHtml += `<tr class="${rowClass}">
+        <td>
+          <span class="rank-badge">${rowNum++}</span>
+        </td>
+        <td>
+          <div class="food-name">${item.food_name_ar}</div>
+          <div style="font-size:.72rem;color:var(--gray-500)">${item.food_code}</div>
+        </td>
+        <td style="font-weight:600">${item.qty_g_per_day} غ</td>
+        <td>${item.qty_g_total} غ</td>
+        <td>${item.price_per_100g.toFixed(4)} د.أ</td>
+        <td><span class="price-badge">${item.item_cost.toFixed(3)} د.أ</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:50px;height:6px;background:var(--gray-200);border-radius:3px;overflow:hidden;">
+              <div style="width:${Math.min(parseFloat(pct)*2,100)}%;height:100%;background:var(--green-mid);border-radius:3px;"></div>
+            </div>
+            <span style="font-size:.78rem;color:var(--gray-500)">${pct}%</span>
+          </div>
+        </td>
+      </tr>`;
+    });
+  });
+
+  basketHtml += '</tbody></table></div></div>';
+
+  el.innerHTML = statsHtml + personsHtml + covHtml + basketHtml;
+}
+
+
+// ─────────────────────────────────────────────────
+// GOVERNORATE STATE
+// ─────────────────────────────────────────────────
+let govState = {
+  fileType: 'single',
+  availableGovs: [],
+  selectedGov: '',
+  filepath: '',
+};
+
+const GOV_ICONS = {
+  'عمان':'🏛️','البلقاء':'🌾','الزرقاء':'🏭','مادبا':'🗿',
+  'اربد':'🌿','المغرق':'🌊','جرش':'🏛','عجلون':'🏰',
+  'الكرك':'⚔️','الطفيلة':'🌲','معان':'🏜️','العقبة':'⚓'
+};
+
+function renderGovGrid(govs) {
+  const grid = document.getElementById('govGrid');
+  grid.innerHTML = '';
+  govs.forEach(gov => {
+    const btn = document.createElement('button');
+    btn.className = 'gov-btn';
+    btn.dataset.gov = gov;
+    btn.innerHTML = `<span class="gov-flag">${GOV_ICONS[gov]||'📍'}</span>${gov}`;
+    btn.onclick = () => selectGovernorate(gov);
+    grid.appendChild(btn);
+  });
+}
+
+function selectGovernorate(gov) {
+  govState.selectedGov = gov;
+  // Update buttons
+  document.querySelectorAll('.gov-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.gov === gov);
+  });
+  // Show bar
+  document.getElementById('govSelectedName').textContent = gov;
+  document.getElementById('govSelectedBar').classList.add('visible');
+  // Fetch preview for this gov
+  fetch('/api/governorate_preview', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({filepath: govState.filepath, governorate: gov})
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.items) {
+      document.getElementById('govMatchCount').textContent =
+        `${data.items.length} غذاء بأسعار متاحة`;
+      // Update the matched table
+      const tbody = document.getElementById('matchedBody');
+      tbody.innerHTML = '';
+      data.items.forEach(f => {
+        tbody.innerHTML += `<tr>
+          <td><code>${f.food_code}</code></td>
+          <td>${f.food_name_ar}</td>
+          <td><span class="price-badge">${f.price.toFixed(4)} د.أ</span></td>
+        </tr>`;
+      });
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────
+window._pricesFilePath = '';
+
+// Override upload to capture filepath
+const origFetch = window.fetch;
+// We'll get the filepath from the server response and store it
+const _origUploadFile = uploadFile;
+window.uploadFile = async function(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const formData = new FormData();
+  formData.append('price_file', file);
+  document.getElementById('alertPrices').innerHTML = `<div class="alert alert-info">⏳ جاري رفع الملف...</div>`;
+  try {
+    const res = await fetch('/upload_prices',{method:'POST',body:formData});
+    const data = await res.json();
+    if(data.error) {
+      document.getElementById('alertPrices').innerHTML=`<div class="alert alert-danger">❌ ${data.error}</div>`;
+      return;
+    }
+    // Get filepath from server
+    const filenameOnly = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    window._pricesFilePath = 'uploads/'+filenameOnly;
+    // Actually we need to ask server for the real path
+    window._pricesFilePath = data.filepath||'';
+    // ── Governorate state ──
+    govState.filepath     = data.filepath||'';
+    govState.fileType     = data.file_type||'single';
+    govState.availableGovs= data.governorates||[];
+    govState.selectedGov  = '';
+
+    state.pricesLoaded=true;
+    document.getElementById('alertPrices').innerHTML=`<div class="alert alert-success">✅ ${data.message}</div>`;
+    document.getElementById('btnNext1').disabled=false;
+    document.getElementById('pricesResult').style.display='block';
+    document.getElementById('pricesAlert').textContent=data.message;
+
+    // Show governorate grid if multi_gov file
+    const govWrap = document.getElementById('govSelectorWrap');
+    if(govState.fileType==='multi_gov' && govState.availableGovs.length>0){
+      govWrap.classList.add('visible');
+      renderGovGrid(govState.availableGovs);
+    } else {
+      govWrap.classList.remove('visible');
+    }
+
+    const tbody=document.getElementById('matchedBody');
+    tbody.innerHTML='';
+    (data.matched_foods||[]).forEach(f=>{
+      tbody.innerHTML+=`<tr>
+        <td><code>${f.food_code}</code></td>
+        <td>${f.food_name_ar}</td>
+        <td><span class="price-badge">${parseFloat(f.price_display||0).toFixed(4)} د.أ/100غ</span></td>
+      </tr>`;
+    });
+  } catch(e) {
+    document.getElementById('alertPrices').innerHTML=`<div class="alert alert-danger">❌ ${e.message}</div>`;
+  }
+};
+
+// Load foods DB info
+fetch('/api/foods').then(r=>r.json()).then(foods=>{
+  const byGroup={};
+  foods.forEach(f=>{
+    const g=f.group_name_ar||'أخرى';
+    if(!byGroup[g]) byGroup[g]=[];
+    byGroup[g].push(f);
+  });
+  let html='<div class="upload-info-grid">';
+  Object.entries(byGroup).forEach(([g,items])=>{
+    html+=`<div class="upload-info-item"><div class="dot"></div><strong>${g}</strong>: ${items.length} غذاء</div>`;
+  });
+  html+=`</div><p style="font-size:.82rem;color:var(--gray-500);margin-top:12px;">إجمالي ${foods.length} غذاء مسجّل في قاعدة البيانات</p>`;
+  document.getElementById('foodsDbInfo').innerHTML=html;
+});
+
+// Add one default person
+addPerson({name:'الفرد الأول', age:30, gender:'male', weight_kg:75, height_cm:175, pal_level:'moderate', life_stage:'normal'});
+</script>
+</body>
+</html>
